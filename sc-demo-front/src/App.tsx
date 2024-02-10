@@ -17,7 +17,7 @@ const App: React.FC = () => {
 
     return (
         <div>
-            <div>SC demo test</div>
+            <div>SC demo test!</div>
             {data ? <div>{data.Hello}</div> : <button onClick={GetData}>Get Data</button>}
         </div>
     );
