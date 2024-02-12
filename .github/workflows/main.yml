@@ -1,25 +1,25 @@
-name: sakura
+# name: sakura
 
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
 
-jobs:
-  build:
+# jobs:
+#   build:
 
-    runs-on: ubuntu-latest
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - name: Deploy
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          script: |
-            cd ${{ secrets.FTP_DIR }}
-            git pull origin main
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v4
+#       - name: Deploy
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.FTP_SERVER }}
+#           username: ${{ secrets.FTP_USERNAME }}
+#           password: ${{ secrets.FTP_PASSWORD }}
+#           script: |
+#             cd ${{ secrets.FTP_DIR }}
+#             git pull origin main
