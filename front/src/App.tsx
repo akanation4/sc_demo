@@ -39,7 +39,7 @@ const Rec: React.FC = () => {
                                 'Content-Type': 'multipart/form-data'
                             }
                         });
-                        const data = response.data();
+                        const data = response.data;
                         console.log("音声ファイルが送信されました", data);  
                         setFilename(data.filename);
                     } catch (error) {
