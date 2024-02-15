@@ -1,18 +1,76 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 
-const App: React.FC = () => {
+const url = "https://sc-demo-otkk.onrender.com/";
+
+const Rec: React.FC = () => {
+    const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+    const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+
+    const toggleRecording = () => {
+        if (!isRecording) {
+            navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                const recorder = new MediaRecorder(stream);
+                setMediaRecorder(recorder);
+
+                recorder.ondataavailable = (e: BlobEvent) => {
+                    setAudioChunks(currentCunks => [...currentCunks, e.data]);
+                };
+
+                recorder.start();
+                setIsRecording(true);
+            })
+            .catch(error => console.error("録音を開始できませんでした", error));
+        } else {
+            if (mediaRecorder) {
+                mediaRecorder.stop();
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audioFile', audioBlob, 'recording.wav');
+
+                    try {
+                        const response = await fetch(url + "detect", {
+                            method: 'POST',
+                            body: formData
+                        });
+                        const data = await response.json();
+                        console.log("音声ファイルが送信されました", data);  
+                    } catch (error) {
+                        console.error("音声ファイルの送信に失敗しました", error);
+                    }
+    
+                    setIsRecording(false);
+                    setAudioChunks([]);
+                }
+            }
+        }
+    };
+
+    return (
+        <div>
+            <h2>Rec</h2>
+            <button onClick={toggleRecording}>
+                {isRecording ? "Stop" : "Start"}
+            </button>
+            <Link to="/play">Play</Link>
+        </div>
+    );
+}
+
+const Play = () => {
     const [inputText, setInputText] = useState('');
     const [audioSrc, setAudioSrc] = useState('');
     const [error, setError] = useState('');
-    const url = "https://sc-demo-otkk.onrender.com/";
 
     const fetchWavFile = async () => {
         try {
             const response = await axios.post(url + "embed", { text: inputText }, { responseType: 'blob' });
             const audioUrl = URL.createObjectURL(response.data);
             setAudioSrc(audioUrl);
-            saveAudioFile(audioUrl);
             setError('');
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.data) {
@@ -36,23 +94,31 @@ const App: React.FC = () => {
         }
     };
 
-    const saveAudioFile = (audioUrl: string) => {
-        const link = document.createElement('a');
-        link.href = audioUrl;
-        link.download = 'stego.wav';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
     return (
         <div>
-            <div>SC demo test</div>
+            <h2>Play</h2>
             <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
             <button onClick={fetchWavFile}>Embed</button>
+            <br></br>
             {error && <p style={{ color: 'red' }}>{error}</p>}
             {audioSrc && <audio src={audioSrc} controls />}
+            <Link to="/rec">Rec</Link>
         </div>
+    );
+}
+
+const App: React.FC = () => {
+    return (
+            <Router>
+                <div>
+                    <div>SC demo test</div>
+                    <Routes>
+                        <Route path="/" element={<Rec />} />
+                        <Route path="/rec" element={<Rec />} />
+                        <Route path="/play" element={<Play />} />
+                    </Routes>
+                </div>
+            </Router>
     );
 }
 
