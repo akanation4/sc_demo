@@ -7,10 +7,11 @@ interface DataResponse {
 
 const App: React.FC = () => {
     const [data, setData] = useState<DataResponse | null>(null);
-    const url = "https://sc-demo-otkk.onrender.com/";
+    const [inputText, setInputText] = useState('');
+    const url = "https://sc-demo-otkk.onrender.com/modify";
 
-    const GetData = () => {
-        axios.get<DataResponse>(url).then((res) => {
+    const SendData = () => {
+        axios.post<DataResponse>(url, { text: inputText }).then((res) => {
             setData(res.data);
         });
     };
@@ -18,7 +19,8 @@ const App: React.FC = () => {
     return (
         <div>
             <div>SC demo test</div>
-            {data ? <div>{data.Hello}</div> : <button onClick={GetData}>Get Data</button>}
+            <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} />
+            {data ? <div>{data.Hello}</div> : <button onClick={SendData}>Send</button>}
         </div>
     );
 }

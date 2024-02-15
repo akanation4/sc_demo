@@ -1,4 +1,5 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -16,6 +17,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/")
-def Hello():
-    return {"Hello":"World!"}
+@app.post("/modify")
+def modify_text(item: Item):
+    return {"Hello": f"{item.text}!"}
