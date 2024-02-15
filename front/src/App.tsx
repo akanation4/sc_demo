@@ -15,11 +15,22 @@ const App: React.FC = () => {
             saveAudioFile(audioUrl);
             setError('');
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                const message = error.response?.data?.message || "予期しないエラー";
-                setError(message);
+            if (axios.isAxiosError(error) && error.response?.data) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    try {
+                        const jsonResponce = JSON.parse(reader.result as string);
+                        setError(jsonResponce.detail || "エラーの詳細がありません");
+                    } catch (e) {
+                        setError("エラー応答の解析に失敗しました");
+                    }
+                };
+                reader.onerror = () => {
+                    setError("エラーメッセージの読み取りに失敗しました");
+                };
+                reader.readAsText(error.response.data);
             } else {
-                setError("ネットワークエラー");
+                setError("ネットワークエラーまたは未知のエラー");
             }
             console.error(error);
         }
