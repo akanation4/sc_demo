@@ -9,13 +9,13 @@ DEFAULT_SOUND_FILE = 'wav/sin_440_44100.wav'
 PSEUDO_RAND_FILE = 'dat/prs.dat'
 
 
-def gen_bit(text: str):
+def gen_bit(text: str) -> str:
     """
     テキストをビット列に変換する
     """
 
     ascii_value = ord(text)
-    binary_representation = bin(ascii_value[2:])
+    binary_representation = bin(ascii_value)[2:]
     return binary_representation.zfill(8)
 
 
