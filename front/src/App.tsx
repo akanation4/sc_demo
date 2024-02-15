@@ -7,7 +7,7 @@ interface DataResponse {
 
 const App: React.FC = () => {
     const [data, setData] = useState<DataResponse | null>(null);
-    const url = "http://127.0.0.1:8000";
+    const url = "https://sc-demo-otkk.onrender.com/";
 
     const GetData = () => {
         axios.get<DataResponse>(url).then((res) => {
