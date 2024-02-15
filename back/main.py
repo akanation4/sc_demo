@@ -1,6 +1,9 @@
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from models import TextItem
+from embedding import embed
+
 
 app = FastAPI()
 
@@ -17,9 +20,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class Item(BaseModel):
-    text: str
-
 @app.post("/modify")
-def modify_text(item: Item):
+def modify_text(item: TextItem):
     return {"Hello": f"{item.text}!"}
+
+@app.post("/embed")
+def get_embed_wav(item: TextItem):
+    filepath = embed(item.text)
+    return FileResponse(path=filepath, media_type="audio/wav", filename="stego.wav")
