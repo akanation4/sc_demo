@@ -26,5 +26,8 @@ def modify_text(item: TextItem):
 
 @app.post("/embed")
 def get_embed_wav(item: TextItem):
-    filepath = embed(item.text)
-    return FileResponse(path=filepath, media_type="audio/wav", filename="stego.wav")
+    try:
+        filepath = embed(item.text)
+        return FileResponse(path=filepath, media_type="audio/wav", filename="stego.wav")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
