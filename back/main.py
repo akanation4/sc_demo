@@ -5,7 +5,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
-    "https://sc-demo-lovat.vercel.app/"
+    "https://sc-demo-lovat.vercel.app"
 ]
 
 app.add_middleware(
