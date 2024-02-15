@@ -9,8 +9,10 @@ PSEUDO_RAND_FILE = "dat/prs.dat"
 
 
 def amplify(signal, target_peak=1.0):
-    
+
     current_peak = np.max(np.abs(signal))
+    if current_peak == 0:
+        return signal
     amplification_factor = target_peak / current_peak
     amplified_signal = signal * amplification_factor
 
@@ -47,7 +49,7 @@ def detect(file_path):
     num_embed_bit = NUM_EMBED_BIT
     embed_length = frame_shift * num_embed_bit
     
-    prs = np.loadtext(PSEUDO_RAND_FILE)
+    prs = np.loadtxt(PSEUDO_RAND_FILE)
 
     pointer = (total_length - embed_length) // 2
 
