@@ -8,6 +8,7 @@ const Rec: React.FC = () => {
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+    const [filename, setFilename] = useState<string | null>(null);
 
     const toggleRecording = () => {
         if (!isRecording) {
@@ -39,6 +40,7 @@ const Rec: React.FC = () => {
                         });
                         const data = await response.json();
                         console.log("音声ファイルが送信されました", data);  
+                        setFilename(data.filename);
                     } catch (error) {
                         console.error("音声ファイルの送信に失敗しました", error);
                     }
@@ -57,6 +59,7 @@ const Rec: React.FC = () => {
                 {isRecording ? "Stop" : "Start"}
             </button>
             <Link to="/play">Play</Link>
+            {filename && <p>Upload file: {filename}</p>}
         </div>
     );
 }
