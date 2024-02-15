@@ -31,14 +31,15 @@ const Rec: React.FC = () => {
                 mediaRecorder.onstop = async () => {
                     const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                     const formData = new FormData();
-                    formData.append('audioFile', audioBlob, 'recording.wav');
+                    formData.append('file', audioBlob, 'recording.wav');
 
                     try {
-                        const response = await fetch(url + "detect", {
-                            method: 'POST',
-                            body: formData
+                        const response = await axios.post(url + "detect", formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
                         });
-                        const data = await response.json();
+                        const data = response.data();
                         console.log("音声ファイルが送信されました", data);  
                         setFilename(data.filename);
                     } catch (error) {

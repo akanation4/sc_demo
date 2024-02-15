@@ -24,6 +24,10 @@ app.add_middleware(
 def read_root():
     return {"Hello": "World"}
 
+@app.head("/")
+def read_root_head():
+    return {"Hello": "World"}
+
 @app.post("/embed")
 def get_embed_wav(item: TextItem):
     try:
