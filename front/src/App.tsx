@@ -8,7 +8,8 @@ const Rec: React.FC = () => {
     const [isRecording, setIsRecording] = useState<boolean>(false);
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
-    const [filename, setFilename] = useState<string | null>(null);
+    const [detectedText, setDetectedText] = useState<string | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     const toggleRecording = () => {
         if (!isRecording) {
@@ -24,7 +25,10 @@ const Rec: React.FC = () => {
                 recorder.start();
                 setIsRecording(true);
             })
-            .catch(error => console.error("録音を開始できませんでした", error));
+            .catch(error => {
+                console.error("録音を開始できませんでした", error)
+                setError("録音を開始できませんでした");
+            });
         } else {
             if (mediaRecorder) {
                 mediaRecorder.stop();
@@ -41,9 +45,12 @@ const Rec: React.FC = () => {
                         });
                         const data = response.data;
                         console.log("音声ファイルが送信されました", data);  
-                        setFilename(data.filename);
+                        if (data.detected) {
+                            setDetectedText(data.detected);
+                        }
                     } catch (error) {
                         console.error("音声ファイルの送信に失敗しました", error);
+                        setError("音声ファイルの送信に失敗しました");
                     }
     
                     setIsRecording(false);
@@ -60,7 +67,8 @@ const Rec: React.FC = () => {
                 {isRecording ? "Stop" : "Start"}
             </button>
             <Link to="/play">Play</Link>
-            {filename && <p>Upload file: {filename}</p>}
+            {detectedText && <p>Detected: {detectedText}</p>}
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </div>
     );
 }

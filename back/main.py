@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from models import TextItem
 from embedding import embed
+from detection import detect
 
 
 app = FastAPI()
@@ -41,4 +42,10 @@ async def get_detect_text(file: UploadFile = File(...)):
     file_path = f"wav/{file.filename}"
     with open(file_path, "wb+") as file_object:
        file_object.write(await file.read())
-    return JSONResponse(status_code=200, content={"filename": file.filename})
+    try:
+        text = detect(file_path)
+        return JSONResponse(status_code=200, content={"detected": text})
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+        
+    
