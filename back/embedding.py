@@ -27,7 +27,7 @@ def embed(text: str, frame_length=DEFAULT_FRAME_LENGTH, control_strength=DEFAULT
     try:
         prs = np.loadtxt(PSEUDO_RAND_FILE)
 
-        cover_signal = sf.read(sound_file)
+        cover_signal, sample_rate = sf.read(sound_file)
         bit = gen_bit(text)
 
         frame_shift = int(frame_length)
@@ -51,12 +51,12 @@ def embed(text: str, frame_length=DEFAULT_FRAME_LENGTH, control_strength=DEFAULT
 
             watermarked_signal[frame_shift * i : frame_shift * (i + 1)] = watermarked_frame[0 : frame_shift]
 
-            start_part = cover_signal[0 : (total_length - embed_length) // 2]
-            end_part = cover_signal[(total_length - embed_length) // 2 + embed_length :]
-            watermarked_signal = np.concatenate((start_part, watermarked_signal, end_part))
+        start_part = cover_signal[0 : (total_length - embed_length) // 2]
+        end_part = cover_signal[(total_length - embed_length) // 2 + embed_length :]
+        watermarked_signal = np.concatenate((start_part, watermarked_signal, end_part))
 
         wm_filepath = DEFAULT_SOUND_FILE.replace('.wav', '_wm.wav')
-        sf.write(wm_filepath, watermarked_signal, DEFAULT_SAMPLE_RATE)
+        sf.write(wm_filepath, watermarked_signal, sample_rate)
 
         return wm_filepath
     except Exception as e:
