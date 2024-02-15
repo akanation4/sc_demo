@@ -17,6 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+class Item(BaseModel):
+    text: str
+
 @app.post("/modify")
 def modify_text(item: Item):
     return {"Hello": f"{item.text}!"}
