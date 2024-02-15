@@ -20,9 +20,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.post("/modify")
-def modify_text(item: TextItem):
-    return {"Hello": f"{item.text}!"}
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 @app.post("/embed")
 def get_embed_wav(item: TextItem):
