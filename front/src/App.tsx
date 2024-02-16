@@ -50,7 +50,11 @@ const Rec: React.FC = () => {
                         }
                     } catch (error) {
                         console.error("音声ファイルの送信に失敗しました", error);
-                        setError("音声ファイルの送信に失敗しました");
+                        if (error.response && error.response.data && error.response.data.detail) {
+                            setError(`音声ファイルの送信に失敗しました: ${error.response.data.detail}`);
+                        } else {    
+                            setError("音声ファイルの送信に失敗しました");
+                        }
                     }
     
                     setIsRecording(false);
