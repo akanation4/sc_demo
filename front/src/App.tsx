@@ -70,6 +70,7 @@ const Rec: React.FC = () => {
             <button onClick={toggleRecording}>
                 {isRecording ? "Stop" : "Start"}
             </button>
+            <br></br>
             <Link to="/play">Play</Link>
             {detectedText && <p>Detected: {detectedText}</p>}
             {error && <p style={{ color: 'red' }}>{error}</p>}

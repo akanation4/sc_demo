@@ -5,6 +5,8 @@ from models import TextItem
 from embedding import embed
 from detection import detect
 
+import soundfile as sf
+
 
 app = FastAPI()
 
@@ -39,13 +41,14 @@ def get_embed_wav(item: TextItem):
 
 @app.post("/detect")
 async def get_detect_text(file: UploadFile = File(...)):
-    file_path = f"wav/{file.filename}"
+    file_path = "wav/recording.wav"
     with open(file_path, "wb+") as file_object:
        file_object.write(await file.read())
+    _, sr = sf.read(file_path)
     try:
         text = detect(file_path)
         return JSONResponse(status_code=200, content={"detected": text})
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e) + " " + str(sr))
         
     
